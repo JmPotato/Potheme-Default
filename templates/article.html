@@ -11,6 +11,18 @@
         <meta name="twitter:creator" content="{{ twitter_username }}">
         <meta name="twitter:domain" content="{{ handler.settings['blog_url'] }}">
     {% end %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.getElementById("article"), {
+                delimiters: [
+                    {left: "$$", right: "$$", display: true},
+                    {left: "$", right: "$", display: false}
+                ]});
+        });
+    </script>
 {% end %}
 
 {% block content %}
@@ -18,7 +30,7 @@
     <div class="block-title">
         {{ article.title }}
     </div>
-    <div class="block-content">
+    <div class="block-content" id="article">
         {{ handler.md_to_html(article.content) }}
     </div>
     <div class="block-footer">
@@ -30,13 +42,14 @@
         </div>
         {% if current_user %}
         <div id="operation">
-            <a href="/admin/edit/article/{{ article.id }}" class="operation_box">Edit</a>
+            <a href="/admin/edit/article/{{ article.id }}" class="operation_box" style="text-decoration:underline;">Edit</a>
             <a class="operation_box" style="text-decoration:underline;" onclick="if(confirm('Are you sure to delete this article?')){window.location.href='/admin/edit/delete/article/{{ article.id }}';}">Delete</a>
         </div>
         {% end %}
     </div>
-    {% if comment %}
-    <div class="comment">
+    <div class="block-comment">
+    {% if comment_system == 1 and disqus_name %}
+        <div id="disqus_proxy_thread"></div>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
             var disqus_shortname = '{{ disqus_name.strip().lstrip() }}';
@@ -47,8 +60,23 @@
             })();
         </script>
         <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">Comments Powered by <span class="logo-disqus">Disqus</span></a>
-    </div>
+    {% elif comment_system == 2 and valine_app_id and valine_app_key %}
+        <script src='{{ static_url("js/av-min.js") }}'></script>
+        <script src='{{ static_url("js/Valine.js") }}'></script>
+        <div id="vcomments"></div>
+        <script>
+            new Valine({
+                el: '#vcomments',
+                appId: '{{ valine_app_id }}',
+                appKey: '{{ valine_app_key }}',
+                notify: false,
+                verify: false,
+                lang: 'en',
+                avatar: 'mm',
+                placeholder: 'Make sure your comments are useful to others :)'
+            })
+        </script>
     {% end %}
+    </div>
 </div>
 {% end %}

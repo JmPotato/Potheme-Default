@@ -7,10 +7,10 @@
         <a href="/article/{{ article.id }}">{{ article.title }}</a>
     </div>
     <div class="block-content">
-        {{ handler.md_to_html(article.content) }}
+        {{ handler.description(handler.md_to_html(article.content)) }}
     </div>
     <div class="block-footer">
-        <div id="date">Post on {{ article.datetime }}</div>
+        <div id="date">Post on {{ article.datetime }}<a href="/article/{{ article.id }}" style="float:right;">Read More</a></div>
     </div>
 </div>
 {% end %}
@@ -19,10 +19,11 @@
 <div class="block-page">
     <ul class="pager">
         {% if page_number-1 > 0 %}
-        <li class="next"><a href="/page/{{ page_number-1 }}">&larr; Newer</a></li>
+            <li class="previous"><a href="/page/{{ page_number-1 }}">&larr; Newer</a></li>
         {% end %}
+        <li><span>Page {{ page_number }} of {{ max_page }}</span></li>
         {% if post_per_page*page_number < count %}
-        <li class="previous"><a href="/page/{{ page_number+1 }}">Older &rarr;</a></li>
+            <li class="next"><a href="/page/{{ page_number+1 }}">Older &rarr;</a></li>
         {% end %}
     </ul>
 </div>
