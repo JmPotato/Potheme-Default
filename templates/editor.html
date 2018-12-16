@@ -80,8 +80,8 @@
             </div>
         </form>
     </div>
-    <div class="block-title" id="preview">Preview</div>
-    <div class="block-content" v-html="compiledMarkdown"></div>
+    <div class="block-title">Preview</div>
+    <div class="block-content" id="preview" v-html="compiledMarkdown"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -91,6 +91,14 @@
 <script src="https://unpkg.com/lodash@4.16.0"></script>
 <script>
     document.addEventListener("wheel", function() {
+        renderMathInElement(document.getElementById("preview"), {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+    document.addEventListener("touchmove", function() {
         renderMathInElement(document.getElementById("preview"), {
             delimiters: [
                 {left: "$$", right: "$$", display: true},
